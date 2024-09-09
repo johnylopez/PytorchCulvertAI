@@ -1,0 +1,19 @@
+<launch>
+    <node pkg="culvertai_pytorch" type="detect_ros.py" name="detect" output="screen" ns="culvertai">
+        <!-- Download the official weights from the original repo -->
+        <param name="weights_path" type="str" value="/home/administrator/culvert_ws/src/CulvertAIPytorchRos/weights/1.7model.pth"/>
+        <!-- topic name to subscribe to -->
+        <param name="img_topic" type="str" value="/camera/image_raw" />
+        <!-- topic name for the detection output -->
+        <param name="out_topic" type="str" value="culvert_ai" />
+        <!-- queue size for publishing -->
+        <param name="queue_size" type="int" value="1" />
+        <!-- image size to which to resize each input image before feeding into the
+        network (the final output is rescaled to the original image size) -->
+        <param name="img_size" type="int" value="128" />
+        <!-- flag whether to also publish image with the visualized detections -->
+        <param name="visualize" type="bool" value="true" />
+        <!-- 'cuda' or 'cpu' -->
+        <param name="device" type="str" value="cuda" />
+    </node>
+</launch>
