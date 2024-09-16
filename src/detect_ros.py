@@ -14,13 +14,25 @@ from cv_bridge import CvBridge
 from models.culvertAI import attempt_load
 import torch.nn.functional as F
 from visualizer import createOutputImage
+from skimage.transform import resize
 
+def resizeImg(input, desired_height, desired_width):
+    num_channels = 3
+    # Initialize the output array to store the resized data
+    output = np.zeros((desired_height, desired_width, num_channels), dtype=input.dtype)
+    # Resize each image in the input array to the desired size
+    for j in range(num_channels):
+        output[:, :, j] = resize(input[:, :, j], (desired_height, desired_width), preserve_range=True)
+    # resized_image = resize(input, (desired_height, desired_width, input.shape[2]),
+    #                        preserve_range=True, anti_aliasing=True)
+    # return resized_image.astype(np.uint8) 
+    return output
 
 class CulvertAI:
     def __init__(self, weights,
                  device: str = "cuda"):
         self.device = device
-        self.model = attempt_load(weights, width_mult=1.7, device = self.device) 
+        self.model = attempt_load(weights, width_mult=3.0, device = self.device) 
         self.model.eval()
     
     
@@ -91,9 +103,9 @@ class CulvertAIPublisher:
         # inference & rescaling the output to original img size
         detections = self.model.inference(img)
         detections_ = createOutputImage(detections[0])
-
-
         output = cv2.addWeighted(np_img_resized, 1, detections_, 1,0)
+        # outputImg = resizeImg(detections_,1080,1920)
+        # output = cv2.addWeighted(np_img_orig, 1, outputImg, 1,0)
         
         # FPS AND CONFIDENCE SCORE
         os.system('clear')
