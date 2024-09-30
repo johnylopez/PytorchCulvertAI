@@ -187,6 +187,12 @@ class DynamicFPNWithAttentionRouting(nn.Module):
 
         return fused
 
+
+# LOAD FUNCTION
+# Parameters
+# weigths: path to Pytorch pretained pth model [String]
+# width_mult: Size of the model, either 1.7 or 3.0 [int]
+# device: Device where to load the model, either "cuda" or "cpu" [String]
 def attempt_load(weights, width_mult, device):
     num_classes = 9
     model = DynamicFPNWithAttentionRouting(num_classes=num_classes, width_mult=width_mult).to(device)
