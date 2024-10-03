@@ -2,7 +2,7 @@
     <node pkg="culvertai_pytorch" type="detect_ros.py" name="detect" output="screen" ns="culvertai">
         <!-- Weight path for the pretrained pytorch pth model-->
         <param name="weights_path" type="str" value="/home/administrator/culvert_ws/src/CulvertAIPytorchRos/weights/large_model.pth"/>
-        <!-- topic name to subscribe to -->
+        <!-- topic name of the camera topic to subscribe to -->
         <param name="img_topic" type="str" value="/camera/image_raw" />
         <!-- topic name for the detection output -->
         <param name="out_topic" type="str" value="culvert_ai/visualization" />

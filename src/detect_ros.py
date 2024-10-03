@@ -87,7 +87,7 @@ class CulvertAIPublisher:
 
         rospy.loginfo("CulvertAI initialization complete. Ready to start inference")
 
-    #Callback function for the publisher
+    #Callback function for the subscriber
     def process_img_msg(self, img_msg: Image):
         #Bridge the image message to a CV2 image
         np_img_orig = self.bridge.imgmsg_to_cv2(
@@ -111,8 +111,7 @@ class CulvertAIPublisher:
         
         # Run the inference, create output image and merging with original image
         detections = self.model.inference(img)
-        detections_ = createOutputImage(detections[0])
-        output = cv2.addWeighted(np_img_resized, 1, detections_, 1,0)
+        output = createOutputImage(detections[0], np_img_resized)
         
         # FPS AND CONFIDENCE SCORE
         os.system('clear')
