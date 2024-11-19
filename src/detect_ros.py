@@ -9,6 +9,7 @@ import rospy
 import torch.nn.functional as F
 
 from skimage.transform import resize
+from std_msgs.msg import String
 from sensor_msgs.msg import Image
 from cv_bridge import CvBridge
 from models.culvertAI import attempt_load
@@ -68,6 +69,8 @@ class CulvertAIPublisher:
             pub_topic, Image, queue_size=queue_size
         ) if visualize else None
 
+        self.detections_publisher = rospy.Publisher('culvert_ai/detections', String, queue_size=10)
+
         #Bridge betwwen ROS image message and OpenCV image. Will convert ros images to cv2 images
         self.bridge = CvBridge()
 
@@ -111,15 +114,18 @@ class CulvertAIPublisher:
         
         # Run the inference, create output image and merging with original image
         detections = self.model.inference(img)
-        output = createOutputImage(detections[0], np_img_resized)
+        output, detections = createOutputImage(detections[0], np_img_resized)
         
         # FPS AND CONFIDENCE SCORE
-        os.system('clear')
-        timediff = datetime.now() - self.time
-        self.time = datetime.now()
-        fps = round(1.0 / timediff.total_seconds(),2)
-        print("FPS: " + str(fps))
+        # os.system('clear')
+        # timediff = datetime.now() - self.time
+        # self.time = datetime.now()
+        # fps = round(1.0 / timediff.total_seconds(),2)
+        # print("FPS: " + str(fps))
         
+        msg = String()
+        msg.data = ', '.join(detections)
+        self.detections_publisher.publish(msg)
 
         # Visualization if visualization parameter is true
         if self.visualization_publisher:
